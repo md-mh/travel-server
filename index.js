@@ -17,49 +17,79 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-async function run(){
-    try{
+async function run() {
+    try {
 
         await client.connect();
         const database = client.db('tourismDB');
         const table = database.collection('location');
+        const order = database.collection('order');
 
         // GET API
-        app.get('/show', async (req,res)=>{
+        app.get('/show', async (req, res) => {
             const getdata = table.find({});
             const showdata = await getdata.toArray();
             res.send(showdata);
         })
 
         // GET Single 
-        app.get('/show/:id', async(req,res)=>{
+        app.get('/show/:id', async (req, res) => {
             const id = req.params.id;
-            const getId = {_id: ObjectId(id)};
+            const getId = { _id: ObjectId(id) };
             const showId = await table.findOne(getId);
             res.json(showId);
         })
 
         // POST API
 
-        app.post('/show', async(req, res)=>{
+        app.post('/show', async (req, res) => {
             const add = req.body;
-            console.log("Add Post Api", add);
-
             const result = await table.insertOne(add);
             console.log(result);
             res.json(result);
+        }) 
+
+        // GET ORDER API
+        app.get('/order', async (req, res) => {
+            const getdata = order.find({});
+            const showdata = await getdata.toArray();
+            res.send(showdata);
         })
 
-        // DELETE API
-        // app.delete('/show/:id', async(req, res)=>{
-        //     const id = req.params.id;
-        //     const getId = {_id: ObjectId(id)};
-        //     const deleteId = await table.deleteOne(getId);
-        //     res.json(deleteId);
-        // })
+        // GET Single ORDER API
+        app.get('/order/:id', async (req, res) => {
+            // const search = req.query.search;
+            // if (search) {
+            //     const result = order.filter(order=>order.place.toLocaleLowerCase().includes(search));
+            //     res.send(result);
+            // }
+            const id = req.params.id;
+            const getId = { _id: ObjectId(id) };
+            console.log(getId);
+            const showId = await order.findOne(getId);
+            res.json(showId);
+        })
+
+        // POST ORDER API
+
+        app.post('/order', async (req, res) => {
+            const add = req.body;
+            const result = await order.insertOne(add);
+            console.log(result);
+            res.json(result);
+        })
+        
+
+        // DELETE ORDER API
+        app.delete('/order/:id', async(req, res)=>{
+            const id = req.params.id;
+            const getId = {_id: ObjectId(id)};
+            const deleteId = await order.deleteOne(getId);
+            res.json(deleteId);
+        })
 
     }
-    finally{
+    finally {
         // await client.close();
     }
 }

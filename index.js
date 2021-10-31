@@ -56,20 +56,6 @@ async function run() {
             res.send(showdata);
         })
 
-        // GET Single ORDER API
-        app.get('/order/:id', async (req, res) => {
-            // const search = req.query.search;
-            // if (search) {
-            //     const result = order.filter(order=>order.place.toLocaleLowerCase().includes(search));
-            //     res.send(result);
-            // }
-            const id = req.params.id;
-            const getId = { _id: ObjectId(id) };
-            console.log(getId);
-            const showId = await order.findOne(getId);
-            res.json(showId);
-        })
-
         // POST ORDER API
 
         app.post('/order', async (req, res) => {

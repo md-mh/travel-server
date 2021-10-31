@@ -56,6 +56,14 @@ async function run() {
             res.send(showdata);
         })
 
+        // GET Single ORDER API
+        app.get('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const getId = { _id: ObjectId(id) };
+            const showId = await order.findOne(getId);
+            res.json(showId);
+        })
+
         // POST ORDER API
 
         app.post('/order', async (req, res) => {
@@ -65,6 +73,20 @@ async function run() {
             res.json(result);
         })
         
+        //UPDATE ORDER API
+        app.put('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedOrder = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const update = {
+                $set: {
+                    name: updatedOrder.name, email: updatedOrder.email, place: updatedOrder.place, mobile: updatedOrder.mobile, members: updatedOrder.members, address: updatedOrder.address, status: updatedOrder.status 
+                },
+            };
+            const result = await order.updateOne(filter, update, options);
+            res.json(result);
+        })
 
         // DELETE ORDER API
         app.delete('/order/:id', async(req, res)=>{
